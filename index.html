@@ -255,7 +255,46 @@
     .how-grid { grid-template-columns: 1fr; }
     .q-card { padding: 24px 20px; }
     .upload-card { padding: 36px 22px; }
+    .cpa-card { padding: 32px 22px; }
+    .cpa-form-row { grid-template-columns: 1fr; }
   }
+
+  /* NAV LINKS */
+  .nav-links { display: flex; align-items: center; gap: 16px; }
+  .nav-link { color: var(--muted); font-size: 0.84rem; font-weight: 500; text-decoration: none; transition: color 0.2s; }
+  .nav-link:hover { color: var(--text); }
+
+  /* CPA EMAIL / WEBSITE-LANDLORD MODULE */
+  .cpa-section { position: relative; z-index: 1; max-width: 760px; margin: 0 auto 80px; padding: 0 24px; }
+  .cpa-card {
+    background: linear-gradient(160deg, var(--card), var(--surface));
+    border: 1px solid rgba(240,192,64,0.25); border-radius: 22px; padding: 44px 44px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+  }
+  .cpa-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
+  .cpa-card h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; line-height: 1.2; margin-bottom: 12px; color: #fff; }
+  .cpa-card > p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 26px; }
+  .cpa-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
+  .cpa-field label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.02em; }
+  .cpa-field input, .cpa-field select, .cpa-field textarea {
+    width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
+    padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
+  }
+  .cpa-field input:focus, .cpa-field select:focus, .cpa-field textarea:focus { border-color: var(--gold); }
+  .cpa-field textarea { resize: vertical; min-height: 84px; }
+  .cpa-field.full { margin-bottom: 12px; }
+  .btn-cpa-send {
+    width: 100%; background: var(--gold); color: #0a0f1e; font-weight: 700; font-size: 1rem;
+    padding: 15px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.25s; margin-top: 6px;
+    box-shadow: 0 8px 28px rgba(240,192,64,0.25);
+  }
+  .btn-cpa-send:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(240,192,64,0.4); }
+  .cpa-fineprint { font-size: 0.74rem; color: var(--muted); line-height: 1.6; margin-top: 16px; text-align: center; }
+  .cpa-fineprint strong { color: var(--text); }
+  .cpa-status { margin-top: 16px; padding: 13px 16px; border-radius: 10px; font-size: 0.86rem; line-height: 1.55; text-align: center; }
+  .cpa-status.ok { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--green); }
+  .cpa-status.err { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: var(--muted); }
+  .cpa-status a { color: var(--gold); font-weight: 600; }
 </style>
 </head>
 <body>
@@ -267,7 +306,9 @@
     <div class="logo">Better<span>Buwis</span></div>
     <div class="nav-tag">A Philippine Tax Filing Simulator</div>
   </div>
-
+  <div class="nav-links">
+    <a href="#cpa" class="nav-link">Need a CPA?</a>
+  </div>
 </nav>
 
 <!-- HERO -->
@@ -379,6 +420,53 @@
     <button class="btn-restart" onclick="restart()">← Start Over</button>
   </div>
 </div>
+
+<!-- CPA EMAIL CAPTURE (website-landlord) -->
+<section class="cpa-section" id="cpa">
+  <div class="cpa-card">
+    <div class="cpa-label">Need a CPA?</div>
+    <h2>Some things are better left to a licensed professional.</h2>
+    <p>BetterBuwis is a free educational tool — we are not a CPA and we do not file returns for you. But if your situation is complex (back taxes, a BIR letter, mixed income, or you just want a real person to check your figures), tell us a little about yourself and we'll help connect you with a licensed CPA. No charge to ask.</p>
+    <form onsubmit="return sendCpaEmail(event)">
+      <div class="cpa-form-row">
+        <div class="cpa-field">
+          <label for="cpa-name">Your name</label>
+          <input type="text" id="cpa-name" placeholder="Juan dela Cruz" required>
+        </div>
+        <div class="cpa-field">
+          <label for="cpa-email">Your email</label>
+          <input type="email" id="cpa-email" placeholder="you@email.com" required>
+        </div>
+      </div>
+      <div class="cpa-form-row">
+        <div class="cpa-field">
+          <label for="cpa-location">City / Province</label>
+          <input type="text" id="cpa-location" placeholder="e.g., Quezon City">
+        </div>
+        <div class="cpa-field">
+          <label for="cpa-type">What do you need help with?</label>
+          <select id="cpa-type">
+            <option value="General tax question">General tax question</option>
+            <option value="Annual income tax return (ITR)">Annual income tax return (ITR)</option>
+            <option value="Freelancer / professional taxes">Freelancer / professional taxes</option>
+            <option value="Small business / SME compliance">Small business / SME compliance</option>
+            <option value="Received a BIR notice / audit">Received a BIR notice / audit</option>
+          </select>
+        </div>
+      </div>
+      <div class="cpa-field full">
+        <label for="cpa-message">Anything else? (optional)</label>
+        <textarea id="cpa-message" placeholder="A sentence or two about your situation..."></textarea>
+      </div>
+      <input type="text" id="cpa-gotcha" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
+      <button type="submit" class="btn-cpa-send">✉️ Send my request</button>
+    </form>
+    <p class="cpa-status" id="cpaStatus" style="display:none"></p>
+    <p class="cpa-fineprint">
+      We use your details <strong>only to connect you with a licensed CPA</strong> — no spam, no sharing beyond that. BetterBuwis is an educational tool and does not provide tax advice or filing services.
+    </p>
+  </div>
+</section>
 
 <footer>
   <strong>BetterBuwis</strong> · betterbuwis.com · Tax filing made simple. Free forever.<br>
@@ -748,6 +836,65 @@ function restart() {
   document.querySelector('.type-select-section').style.opacity='1';
   document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
   window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// =====================
+// CPA LEAD CAPTURE (website-landlord lead funnel)
+// 1. FORM_ENDPOINT: paste your Formspree endpoint (https://formspree.io/f/xxxxxxx).
+//    Leads then arrive automatically in your Formspree dashboard + inbox — no spreadsheet wrangling.
+// 2. CPA_INBOX: fallback address used only if the network request fails.
+// =====================
+const FORM_ENDPOINT = 'https://formspree.io/f/xeedwped';
+const CPA_INBOX = 'cpa@betterbuwis.com';
+
+function cpaFields() {
+  const v = id => (document.getElementById(id) ? document.getElementById(id).value.trim() : '');
+  return { name: v('cpa-name'), email: v('cpa-email'), location: v('cpa-location'), need: v('cpa-type'), message: v('cpa-message'), _gotcha: v('cpa-gotcha') };
+}
+
+function mailtoFallback(e) {
+  if (e) e.preventDefault();
+  const f = cpaFields();
+  const subject = `CPA request via BetterBuwis — ${f.need}`;
+  const body =
+    `Hi BetterBuwis,\n\nI'd like to be connected with a licensed CPA.\n\n` +
+    `Name: ${f.name}\nEmail: ${f.email}\nLocation: ${f.location || '(not provided)'}\n` +
+    `Need: ${f.need}\nDetails: ${f.message || '(none)'}\n\nThank you.`;
+  window.location.href = `mailto:${CPA_INBOX}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
+  return false;
+}
+
+async function sendCpaEmail(e) {
+  e.preventDefault();
+  const form = e.target;
+  const f = cpaFields();
+  const status = document.getElementById('cpaStatus');
+  const btn = form.querySelector('.btn-cpa-send');
+  const label = btn.textContent;
+
+  gtag('event','cpa_request_submitted',{'event_category':'lead','need':f.need});
+  btn.disabled = true; btn.textContent = 'Sending…';
+  status.style.display = 'none';
+
+  try {
+    const res = await fetch(FORM_ENDPOINT, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify({ ...f, _subject: `CPA request via BetterBuwis — ${f.need}` })
+    });
+    if (!res.ok) throw new Error('Form endpoint returned ' + res.status);
+    form.reset();
+    status.className = 'cpa-status ok';
+    status.textContent = '✓ Salamat! Your request is in. We will email you to connect you with a licensed CPA shortly.';
+    status.style.display = 'block';
+  } catch (err) {
+    status.className = 'cpa-status err';
+    status.innerHTML = 'That did not go through. <a href="#" onclick="return mailtoFallback(event)">Tap here to send it by email instead →</a>';
+    status.style.display = 'block';
+  } finally {
+    btn.disabled = false; btn.textContent = label;
+  }
+  return false;
 }
 </script>
 </body>
