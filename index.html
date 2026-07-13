@@ -1,901 +1,281 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
 <head>
-<meta charset="UTF-8">
-<link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230a0f1e'/><text x='4' y='48' font-family='Georgia,serif' font-size='42' font-weight='900' fill='%23f0c040'>B</text><text x='30' y='48' font-family='Georgia,serif' font-size='42' font-weight='900' fill='%23ffffff'>B</text></svg>">
-<title>BetterBuwis — A Philippine Tax Filing Simulator v1.9</title>
-<!-- Google tag (gtag.js) -->
-<script async src="https://www.googletagmanager.com/gtag/js?id=G-RTG8ZBJ136"></script>
-<script>
-  window.dataLayer = window.dataLayer || [];
-  function gtag(){dataLayer.push(arguments);}
-  gtag('js', new Date());
-  gtag('config', 'G-RTG8ZBJ136');
-</script>
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;900&family=DM+Sans:wght@300;400;500;600&display=swap');
-
-  :root {
-    --bg: #0a0f1e;
-    --surface: #111827;
-    --card: #1a2235;
-    --border: rgba(255,255,255,0.08);
-    --gold: #f0c040;
-    --gold-dim: rgba(240,192,64,0.15);
-    --blue: #4f8ef7;
-    --green: #34d399;
-    --red: #f87171;
-    --text: #f1f5f9;
-    --muted: #94a3b8;
-    --accent: #e2a12f;
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="A free Philippine tax estimator and plain-language guide for employees, freelancers, and small businesses.">
+  <title>BetterBuwis — Understand your Philippine tax obligations</title>
+  <link rel="stylesheet" href="styles.css">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'><rect width='64' height='64' rx='12' fill='%230b1220'/><text x='5' y='47' font-family='Georgia' font-size='40' font-weight='900' fill='%23f0c04a'>B</text><text x='31' y='47' font-family='Georgia' font-size='40' font-weight='900' fill='%23ffffff'>B</text></svg>">
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RTG8ZBJ136"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RTG8ZBJ136', { anonymize_ip: true });
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebSite",
+    "name": "BetterBuwis",
+    "url": "https://betterbuwis.com/",
+    "description": "A free Philippine tax estimator and plain-language tax education website."
   }
-
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'DM Sans', sans-serif; background: var(--bg); color: var(--text); min-height: 100vh; overflow-x: hidden; }
-
-  .bg-grid {
-    position: fixed; inset: 0; z-index: 0;
-    background-image: linear-gradient(rgba(79,142,247,0.03) 1px, transparent 1px), linear-gradient(90deg, rgba(79,142,247,0.03) 1px, transparent 1px);
-    background-size: 40px 40px;
-  }
-  .bg-glow {
-    position: fixed; top: -200px; left: 50%; transform: translateX(-50%);
-    width: 800px; height: 600px;
-    background: radial-gradient(ellipse, rgba(240,192,64,0.07) 0%, transparent 70%);
-    z-index: 0; pointer-events: none;
-  }
-
-  nav {
-    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
-    padding: 18px 40px;
-    display: flex; align-items: center; justify-content: space-between;
-    background: rgba(10,15,30,0.88); backdrop-filter: blur(12px);
-    border-bottom: 1px solid var(--border);
-  }
-  .logo { font-family: 'Playfair Display', serif; font-size: 1.5rem; font-weight: 900; color: var(--gold); }
-  .logo span { color: var(--text); }
-  .nav-tag { font-size: 0.72rem; color: var(--muted); letter-spacing: 0.05em; margin-top: 2px; }
-  .nav-pill {
-    background: var(--gold-dim); border: 1px solid rgba(240,192,64,0.3);
-    color: var(--gold); font-size: 0.78rem; font-weight: 600;
-    padding: 6px 18px; border-radius: 50px; cursor: pointer; transition: all 0.2s;
-  }
-  .nav-pill:hover { background: rgba(240,192,64,0.25); }
-
-  .hero {
-    position: relative; z-index: 1;
-    padding: 140px 40px 70px; text-align: center;
-    max-width: 860px; margin: 0 auto;
-  }
-  .hero-badge {
-    display: inline-flex; align-items: center; gap: 8px;
-    background: var(--gold-dim); border: 1px solid rgba(240,192,64,0.25);
-    color: var(--gold); font-size: 0.78rem; font-weight: 600;
-    padding: 6px 16px; border-radius: 50px; margin-bottom: 28px; letter-spacing: 0.05em;
-  }
-  .dot { width: 6px; height: 6px; background: var(--gold); border-radius: 50%; animation: pulse 2s infinite; }
-  @keyframes pulse { 0%,100%{opacity:1;transform:scale(1)} 50%{opacity:0.5;transform:scale(0.8)} }
-
-  h1 { font-family: 'Playfair Display', serif; font-size: clamp(2.4rem, 5vw, 3.8rem); font-weight: 900; line-height: 1.1; margin-bottom: 20px; letter-spacing: -1px; color: #ffffff; text-shadow: 0 2px 20px rgba(0,0,0,0.5); }
-  h1 em { color: var(--gold); font-style: normal; }
-  .hero p { font-size: 1.05rem; color: var(--muted); max-width: 560px; margin: 0 auto 36px; line-height: 1.75; }
-
-  .hero-cta { display: flex; gap: 14px; justify-content: center; flex-wrap: wrap; }
-  .btn-primary {
-    background: var(--gold); color: #0a0f1e; font-weight: 700; font-size: 1rem;
-    padding: 14px 32px; border-radius: 10px; border: none; cursor: pointer;
-    transition: all 0.25s; box-shadow: 0 8px 32px rgba(240,192,64,0.3);
-  }
-  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 12px 40px rgba(240,192,64,0.45); }
-  .btn-ghost {
-    background: transparent; color: var(--text); font-weight: 500; font-size: 1rem;
-    padding: 14px 32px; border-radius: 10px; border: 1px solid var(--border); cursor: pointer; transition: all 0.25s;
-  }
-  .btn-ghost:hover { background: var(--card); }
-
-  .trust-strip {
-    position: relative; z-index: 1;
-    display: flex; justify-content: center; gap: 36px; padding: 0 40px 60px; flex-wrap: wrap;
-  }
-  .trust-item { display: flex; align-items: center; gap: 8px; font-size: 0.82rem; color: var(--muted); }
-  .trust-icon { color: var(--green); font-size: 0.9rem; }
-
-  /* TAXPAYER TYPE SELECTOR */
-  .type-select-section {
-    position: relative; z-index: 1;
-    max-width: 900px; margin: 0 auto 60px; padding: 0 24px;
-  }
-  .section-label { font-size: 0.73rem; font-weight: 700; letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase; margin-bottom: 12px; text-align: center; }
-  .section-title { font-family: 'Playfair Display', serif; font-size: 1.7rem; font-weight: 900; text-align: center; margin-bottom: 28px; }
-
-  .type-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 30px; }
-  .type-card {
-    background: var(--card); border: 2px solid var(--border); border-radius: 16px;
-    padding: 24px 22px; cursor: pointer; transition: all 0.25s;
-    display: flex; gap: 16px; align-items: flex-start;
-  }
-  .type-card:hover { border-color: rgba(240,192,64,0.4); transform: translateY(-2px); }
-  .type-card.selected { border-color: var(--gold); background: var(--gold-dim); }
-  .tc-icon { font-size: 2rem; flex-shrink: 0; }
-  .tc-body h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 5px; }
-  .tc-body p { font-size: 0.78rem; color: var(--muted); line-height: 1.6; }
-  .tc-forms { font-size: 0.72rem; color: var(--gold); font-weight: 600; margin-top: 6px; letter-spacing: 0.04em; }
-
-  /* UPLOAD SECTION */
-  .upload-section { position: relative; z-index: 1; max-width: 740px; margin: 0 auto 80px; padding: 0 24px; }
-  .upload-card {
-    background: var(--card); border: 2px dashed rgba(240,192,64,0.3);
-    border-radius: 20px; padding: 48px 40px; text-align: center;
-    cursor: pointer; transition: all 0.3s; position: relative; overflow: hidden;
-  }
-  .upload-card::before {
-    content: ''; position: absolute; inset: 0;
-    background: radial-gradient(ellipse at 50% 0%, rgba(240,192,64,0.05), transparent 70%);
-  }
-  .upload-card:hover, .upload-card.dragover { border-color: var(--gold); background: rgba(240,192,64,0.05); }
-  .upload-icon { width: 68px; height: 68px; background: var(--gold-dim); border-radius: 16px; display: flex; align-items: center; justify-content: center; margin: 0 auto 18px; font-size: 1.9rem; }
-  .upload-card h2 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 700; margin-bottom: 10px; }
-  .upload-card p { color: var(--muted); font-size: 0.88rem; line-height: 1.7; margin-bottom: 20px; }
-  .upload-types { display: flex; gap: 8px; justify-content: center; flex-wrap: wrap; margin-bottom: 22px; }
-  .type-tag { background: rgba(79,142,247,0.1); border: 1px solid rgba(79,142,247,0.2); color: var(--blue); font-size: 0.72rem; font-weight: 600; padding: 4px 12px; border-radius: 50px; }
-  .upload-note { font-size: 0.78rem; color: var(--muted); margin-bottom: 20px; font-style: italic; }
-  #file-input { display: none; }
-
-  /* WIZARD */
-  #wizard { display: none; position: relative; z-index: 1; max-width: 760px; margin: 0 auto 80px; padding: 0 24px; }
-  #wizard.active { display: block; }
-
-  .progress-wrap { background: var(--card); border-radius: 14px; padding: 20px 28px; margin-bottom: 24px; border: 1px solid var(--border); }
-  .step-row { display: flex; justify-content: space-between; margin-bottom: 12px; }
-  .step-pill { font-size: 0.72rem; font-weight: 600; color: var(--muted); padding: 4px 12px; border-radius: 50px; border: 1px solid var(--border); transition: all 0.3s; }
-  .step-pill.active { color: var(--gold); border-color: rgba(240,192,64,0.4); background: var(--gold-dim); }
-  .step-pill.done { color: var(--green); border-color: rgba(52,211,153,0.3); }
-  .progress-bar { height: 4px; background: var(--surface); border-radius: 4px; overflow: hidden; }
-  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--gold), var(--accent)); border-radius: 4px; transition: width 0.5s ease; }
-
-  .q-card { background: var(--card); border: 1px solid var(--border); border-radius: 20px; padding: 36px 38px; margin-bottom: 20px; animation: slideIn 0.35s ease; }
-  @keyframes slideIn { from {opacity:0;transform:translateY(14px)} to {opacity:1;transform:translateY(0)} }
-  .q-section { font-size: 0.7rem; font-weight: 700; letter-spacing: 0.14em; color: var(--gold); text-transform: uppercase; margin-bottom: 8px; }
-  .q-title { font-family: 'Playfair Display', serif; font-size: 1.35rem; font-weight: 700; margin-bottom: 8px; line-height: 1.3; }
-  .q-hint { font-size: 0.83rem; color: var(--muted); margin-bottom: 24px; line-height: 1.65; }
-
-  .q-options { display: flex; flex-direction: column; gap: 10px; }
-  .q-option {
-    display: flex; align-items: center; gap: 14px;
-    padding: 13px 18px; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; cursor: pointer; transition: all 0.2s; font-size: 0.9rem;
-  }
-  .q-option:hover { border-color: rgba(240,192,64,0.4); background: rgba(240,192,64,0.04); }
-  .q-option.selected { border-color: var(--gold); background: var(--gold-dim); }
-  .opt-icon { font-size: 1.25rem; }
-  .opt-text { font-weight: 500; }
-  .opt-sub { font-size: 0.75rem; color: var(--muted); margin-top: 2px; }
-
-  .q-input {
-    width: 100%; background: var(--surface); border: 1px solid var(--border);
-    border-radius: 12px; padding: 13px 18px; color: var(--text);
-    font-family: 'DM Sans', sans-serif; font-size: 0.95rem; outline: none; transition: border-color 0.2s;
-  }
-  .q-input:focus { border-color: var(--gold); }
-  .q-input::placeholder { color: var(--muted); }
-  .q-input-wrap { display: flex; align-items: center; gap: 10px; }
-  .q-prefix { font-size: 1.2rem; color: var(--gold); font-weight: 700; }
-
-  .q-nav { display: flex; justify-content: space-between; align-items: center; margin-top: 18px; }
-  .btn-back { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 10px 22px; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-size: 0.88rem; cursor: pointer; transition: all 0.2s; }
-  .btn-back:hover { color: var(--text); }
-  .btn-next { background: var(--gold); color: #0a0f1e; border: none; padding: 10px 28px; border-radius: 9px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem; cursor: pointer; transition: all 0.25s; }
-  .btn-next:hover { background: #f5cb60; }
-
-  /* RESULT */
-  #result { display: none; position: relative; z-index: 1; max-width: 760px; margin: 0 auto 80px; padding: 0 24px; }
-  #result.active { display: block; }
-
-  .result-header { text-align: center; padding: 36px 0 24px; }
-  .result-header h2 { font-family: 'Playfair Display', serif; font-size: 1.9rem; font-weight: 900; margin-bottom: 8px; }
-  .result-header p { color: var(--muted); font-size: 0.88rem; }
-
-  .result-cards { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 20px; }
-  .rc { background: var(--card); border: 1px solid var(--border); border-radius: 16px; padding: 22px 18px; text-align: center; }
-  .rc.gold { border-color: var(--gold); background: var(--gold-dim); }
-  .rc.green { border-color: var(--green); background: rgba(52,211,153,0.08); }
-  .rc.red { border-color: var(--red); background: rgba(248,113,113,0.07); }
-  .rc-label { font-size: 0.7rem; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 8px; }
-  .rc-value { font-family: 'Playfair Display', serif; font-size: 1.65rem; font-weight: 900; }
-  .rc.gold .rc-value { color: var(--gold); }
-  .rc.green .rc-value { color: var(--green); }
-  .rc.red .rc-value { color: var(--red); }
-  .rc-sub { font-size: 0.72rem; color: var(--muted); margin-top: 5px; }
-
-  .breakdown { background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; margin-bottom: 18px; }
-  .bi { display: flex; justify-content: space-between; align-items: center; padding: 13px 22px; border-bottom: 1px solid var(--border); font-size: 0.85rem; }
-  .bi:last-child { border-bottom: none; }
-  .bi-label { color: var(--muted); }
-  .bi-val { font-weight: 600; }
-  .bi-val.pos { color: var(--green); }
-  .bi-val.neg { color: var(--red); }
-  .bi-val.gold { color: var(--gold); }
-  .bi-section { background: rgba(240,192,64,0.05); padding: 8px 22px; border-bottom: 1px solid var(--border); }
-  .bi-section span { font-size: 0.68rem; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gold); }
-
-  .callout { border-radius: 14px; padding: 20px 22px; display: flex; gap: 16px; align-items: flex-start; margin-bottom: 18px; }
-  .callout.donation { background: rgba(52,211,153,0.07); border: 1px solid rgba(52,211,153,0.25); }
-  .callout.deadline { background: rgba(240,192,64,0.06); border: 1px solid rgba(240,192,64,0.2); }
-  .callout-icon { font-size: 1.7rem; flex-shrink: 0; }
-  .callout h4 { font-size: 0.9rem; font-weight: 700; margin-bottom: 4px; }
-  .callout.donation h4 { color: var(--green); }
-  .callout.deadline h4 { color: var(--gold); }
-  .callout p { font-size: 0.8rem; color: var(--muted); line-height: 1.65; }
-
-  .disclaimer { background: rgba(248,113,113,0.06); border: 1px solid rgba(248,113,113,0.15); border-radius: 12px; padding: 14px 18px; font-size: 0.77rem; color: var(--muted); line-height: 1.65; }
-  .disclaimer strong { color: var(--red); }
-
-  .result-actions { display: flex; gap: 12px; margin-top: 18px; justify-content: center; }
-  .btn-dl { background: var(--blue); color: white; border: none; padding: 12px 28px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-weight: 700; font-size: 0.9rem; cursor: pointer; }
-  .btn-restart { background: transparent; color: var(--muted); border: 1px solid var(--border); padding: 12px 28px; border-radius: 10px; font-family: 'DM Sans', sans-serif; font-size: 0.9rem; cursor: pointer; }
-
-  /* HOW IT WORKS */
-  .how { position: relative; z-index: 1; max-width: 960px; margin: 0 auto 90px; padding: 0 40px; }
-  .how-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; margin-top: 40px; }
-  .how-card { background: var(--card); border: 1px solid var(--border); border-radius: 18px; padding: 30px 26px; transition: transform 0.25s, border-color 0.25s; }
-  .how-card:hover { transform: translateY(-4px); border-color: rgba(240,192,64,0.25); }
-  .how-num { font-family: 'Playfair Display', serif; font-size: 2.8rem; font-weight: 900; color: rgba(240,192,64,0.15); line-height: 1; margin-bottom: 14px; }
-  .how-card h3 { font-size: 0.95rem; font-weight: 700; margin-bottom: 8px; }
-  .how-card p { font-size: 0.82rem; color: var(--muted); line-height: 1.7; }
-
-  footer { position: relative; z-index: 1; text-align: center; padding: 36px 40px; border-top: 1px solid var(--border); color: var(--muted); font-size: 0.78rem; line-height: 1.8; }
-  footer strong { color: var(--text); }
-
-  @media(max-width:640px) {
-    nav { padding: 14px 18px; }
-    .hero { padding: 110px 20px 50px; }
-    h1 { font-size: 2rem; }
-    .type-grid { grid-template-columns: 1fr; }
-    .result-cards { grid-template-columns: 1fr; }
-    .how-grid { grid-template-columns: 1fr; }
-    .q-card { padding: 24px 20px; }
-    .upload-card { padding: 36px 22px; }
-    .cpa-card { padding: 32px 22px; }
-    .cpa-form-row { grid-template-columns: 1fr; }
-  }
-
-  /* NAV LINKS */
-  .nav-links { display: flex; align-items: center; gap: 16px; }
-  .nav-link { color: var(--muted); font-size: 0.84rem; font-weight: 500; text-decoration: none; transition: color 0.2s; }
-  .nav-link:hover { color: var(--text); }
-
-  /* CPA EMAIL / WEBSITE-LANDLORD MODULE */
-  .cpa-section { position: relative; z-index: 1; max-width: 760px; margin: 0 auto 80px; padding: 0 24px; }
-  .cpa-card {
-    background: linear-gradient(160deg, var(--card), var(--surface));
-    border: 1px solid rgba(240,192,64,0.25); border-radius: 22px; padding: 44px 44px;
-    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-  }
-  .cpa-label { font-size: 0.72rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gold); margin-bottom: 10px; }
-  .cpa-card h2 { font-family: 'Playfair Display', serif; font-size: 1.6rem; font-weight: 900; line-height: 1.2; margin-bottom: 12px; color: #fff; }
-  .cpa-card > p { font-size: 0.9rem; color: var(--muted); line-height: 1.7; margin-bottom: 26px; }
-  .cpa-form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 12px; }
-  .cpa-field label { display: block; font-size: 0.74rem; font-weight: 600; color: var(--muted); margin-bottom: 6px; letter-spacing: 0.02em; }
-  .cpa-field input, .cpa-field select, .cpa-field textarea {
-    width: 100%; background: var(--surface); border: 1px solid var(--border); border-radius: 10px;
-    padding: 12px 14px; color: var(--text); font-family: 'DM Sans', sans-serif; font-size: 0.9rem; outline: none; transition: border-color 0.2s;
-  }
-  .cpa-field input:focus, .cpa-field select:focus, .cpa-field textarea:focus { border-color: var(--gold); }
-  .cpa-field textarea { resize: vertical; min-height: 84px; }
-  .cpa-field.full { margin-bottom: 12px; }
-  .btn-cpa-send {
-    width: 100%; background: var(--gold); color: #0a0f1e; font-weight: 700; font-size: 1rem;
-    padding: 15px; border-radius: 12px; border: none; cursor: pointer; transition: all 0.25s; margin-top: 6px;
-    box-shadow: 0 8px 28px rgba(240,192,64,0.25);
-  }
-  .btn-cpa-send:hover { transform: translateY(-2px); box-shadow: 0 12px 36px rgba(240,192,64,0.4); }
-  .cpa-fineprint { font-size: 0.74rem; color: var(--muted); line-height: 1.6; margin-top: 16px; text-align: center; }
-  .cpa-fineprint strong { color: var(--text); }
-  .cpa-status { margin-top: 16px; padding: 13px 16px; border-radius: 10px; font-size: 0.86rem; line-height: 1.55; text-align: center; }
-  .cpa-status.ok { background: rgba(52,211,153,0.1); border: 1px solid rgba(52,211,153,0.3); color: var(--green); }
-  .cpa-status.err { background: rgba(248,113,113,0.08); border: 1px solid rgba(248,113,113,0.25); color: var(--muted); }
-  .cpa-status a { color: var(--gold); font-weight: 600; }
-</style>
+  </script>
 </head>
 <body>
-<div class="bg-grid"></div>
-<div class="bg-glow"></div>
+<a class="skip-link" href="#main">Skip to main content</a>
+<header class="site-header">
+  <nav class="nav" aria-label="Main navigation">
+    <a class="brand" href="index.html">Better<span>Buwis</span></a>
+    <div class="nav-links">
+      <a href="#calculator">Estimator</a>
+      <a href="#filing-guide">Do I need to file?</a>
+      <a href="penalties.html">Missed a deadline?</a>
+      <a href="methodology.html">Sources</a>
+    </div>
+  </nav>
+</header>
 
-<nav>
-  <div>
-    <div class="logo">Better<span>Buwis</span></div>
-    <div class="nav-tag">A Philippine Tax Filing Simulator</div>
+<main id="main">
+  <section class="hero">
+    <span class="eyebrow">Free · Private · Educational</span>
+    <h1>Know what may be due—<em>and what to do next.</em></h1>
+    <p>BetterBuwis helps Philippine taxpayers estimate income tax, understand filing obligations, and respond to missed deadlines without pretending that one calculator can replace official records or professional review.</p>
+    <div class="hero-actions">
+      <a class="btn btn-primary" href="#calculator" onclick="track('hero_estimator_clicked')">Estimate my tax</a>
+      <a class="btn btn-secondary" href="penalties.html" onclick="track('hero_penalties_clicked')">I missed a deadline</a>
+    </div>
+  </section>
+
+  <div class="trust-row" aria-label="Service principles">
+    <span>No ads</span>
+    <span>No TINs collected</span>
+    <span>Tax figures stay in your browser</span>
+    <span>Sources and caveats shown</span>
   </div>
-  <div class="nav-links">
-    <a href="#cpa" class="nav-link">Need a CPA?</a>
-  </div>
-</nav>
 
-<!-- HERO -->
-<section class="hero">
-  <div class="hero-badge"><div class="dot"></div>FREE · TRAIN Law · NIRC · BIR-Compliant 2025</div>
-  <h1>Buwis na tama,<br><em>para sa lahat.</em></h1>
-  <p>Whether you are an employee, freelancer, small business owner, or a sari-sari store vendor — just answer a few questions and know exactly what you owe. Or better yet, find out how much you are getting back.</p>
-  <div class="hero-cta">
-    <button class="btn-primary" onclick="gtag('event','lets_begin_clicked',{'event_category':'engagement'});document.getElementById('start').scrollIntoView({behavior:'smooth'})">Let's Begin →</button>
-  </div>
-</section>
-
-<div class="trust-strip">
-  <div class="trust-item"><span class="trust-icon">✓</span> Walang bayad</div>
-  <div class="trust-item"><span class="trust-icon">✓</span> Employees, freelancers & MSMEs</div>
-  <div class="trust-item"><span class="trust-icon">✓</span> Donation deductions included</div>
-  <div class="trust-item"><span class="trust-icon">✓</span> Monthly & quarterly filing supported</div>
-</div>
-
-<!-- HOW IT WORKS -->
-<section class="how" id="how" style="padding-top:0;margin-bottom:60px">
-  <div class="section-label" style="text-align:center">How It Works</div>
-  <div class="section-title" style="text-align:center;font-family:'Playfair Display',serif;font-size:1.8rem;font-weight:900;margin-top:10px">Three steps. Zero confusion.</div>
-  <div class="how-grid">
-    <div class="how-card"><div class="how-num">01</div><h3>Tell us who you are</h3><p>Employee, freelancer, business owner — pick your taxpayer type so we show only the questions that apply to you.</p></div>
-    <div class="how-card"><div class="how-num">02</div><h3>Answer a few questions</h3><p>We ask only what is relevant to your taxpayer type. No documents needed — just answer as best you can. Takes about 3 minutes.</p></div>
-    <div class="how-card"><div class="how-num">03</div><h3>Your tax picture at a glance</h3><p>See your taxable income, tax due, refund, and filing deadlines — including that donation deduction your accountant likely missed.</p></div>
-  </div>
-</section>
-
-<!-- TAXPAYER TYPE + UPLOAD -->
-<section class="type-select-section" id="start">
-  <div class="section-title">Who are you filing for?</div>
-
-  <div class="type-grid" id="typeGrid">
-    <div class="type-card" onclick="selectType('employee', this)">
-      <div class="tc-icon">👔</div>
-      <div class="tc-body">
-        <h3>Employee</h3>
-        <p>Salary from one or more employers. One employer may qualify for substituted filing.</p>
-        <div class="tc-forms">BIR Form 1700 · BIR 2316</div>
+  <section class="section-tight">
+    <div class="container">
+      <div class="grid-3">
+        <a class="card card-link" href="#calculator">
+          <div class="card-icon">🧮</div>
+          <div class="card-kicker">Start here</div>
+          <h3>Estimate annual income tax</h3>
+          <p>See the calculation, credits entered, and assumptions instead of receiving a mysterious single number.</p>
+        </a>
+        <a class="card card-link" href="#filing-guide">
+          <div class="card-icon">🧭</div>
+          <div class="card-kicker">Decision guide</div>
+          <h3>Do I need to file or register?</h3>
+          <p>Understand why having a TIN, being registered for a tax type, and actually earning income are different questions.</p>
+        </a>
+        <a class="card card-link" href="penalties.html">
+          <div class="card-icon">⏰</div>
+          <div class="card-kicker">Late filing</div>
+          <h3>What could I have to pay?</h3>
+          <p>Learn about surcharge, interest, compromise penalties, zero returns, and the safest next steps.</p>
+        </a>
       </div>
     </div>
-    <div class="type-card" onclick="selectType('freelance', this)">
-      <div class="tc-icon">💻</div>
-      <div class="tc-body">
-        <h3>Freelancer / Professional</h3>
-        <p>Self-employed professionals, consultants, online workers. Choose 8% or graduated rates.</p>
-        <div class="tc-forms">BIR Form 1701A · 1701Q · 2551Q</div>
+  </section>
+
+  <section class="section" id="calculator">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Tax estimator</div>
+        <h2 class="section-title">A clearer estimate, with fewer dangerous assumptions.</h2>
+        <p class="section-copy">This version uses the individual graduated income-tax schedule effective from 2023 onward and distinguishes pure self-employment from mixed income under the 8% option. It does not calculate VAT, penalties, or special cases.</p>
+      </div>
+
+      <div class="tool-shell">
+        <div class="tool-head">
+          <h2>Annual income-tax estimate</h2>
+          <p>Enter annual figures. Do not enter your TIN, address, employer name, or client information.</p>
+        </div>
+        <div class="tool-grid">
+          <form class="form-panel" id="taxCalculator">
+            <div class="field">
+              <label for="taxpayerType">Taxpayer type</label>
+              <select id="taxpayerType" required>
+                <option value="employee">Employee only</option>
+                <option value="self">Self-employed / freelancer / sole proprietor</option>
+                <option value="mixed">Mixed income: employee plus business or freelance income</option>
+              </select>
+            </div>
+
+            <div id="compensationFields">
+              <div class="field">
+                <label for="taxableCompensation">Taxable compensation income</label>
+                <input id="taxableCompensation" type="number" min="0" step="0.01" placeholder="0">
+                <small>Best source: the taxable compensation amount on your BIR Form 2316—not simply gross salary.</small>
+              </div>
+              <div class="field">
+                <label for="withheld">Income tax withheld from compensation</label>
+                <input id="withheld" type="number" min="0" step="0.01" placeholder="0">
+                <small>Use your withholding certificate or Form 2316.</small>
+              </div>
+            </div>
+
+            <div id="businessFields" class="hidden">
+              <div class="field-row">
+                <div class="field">
+                  <label for="grossBusiness">Gross business or professional receipts</label>
+                  <input id="grossBusiness" type="number" min="0" step="0.01" placeholder="0">
+                </div>
+                <div class="field">
+                  <label for="taxMethod">Income-tax method</label>
+                  <select id="taxMethod">
+                    <option value="8pct">8% option</option>
+                    <option value="osd">Graduated rates with 40% OSD</option>
+                    <option value="itemized">Graduated rates with itemized deductions</option>
+                  </select>
+                </div>
+              </div>
+
+              <div class="field hidden" id="deductionFields">
+                <label for="itemizedExpenses">Potentially deductible business expenses</label>
+                <input id="itemizedExpenses" type="number" min="0" step="0.01" placeholder="0">
+                <small>Entering an amount does not establish deductibility. Documentation and tax rules still apply.</small>
+              </div>
+
+              <div class="field-row">
+                <div class="field">
+                  <label for="vatStatus">VAT status</label>
+                  <select id="vatStatus">
+                    <option value="nonvat">Non-VAT</option>
+                    <option value="vat">VAT-registered</option>
+                  </select>
+                </div>
+                <div class="field">
+                  <label for="quarterlyIncomePaid">Quarterly income tax already paid</label>
+                  <input id="quarterlyIncomePaid" type="number" min="0" step="0.01" placeholder="0">
+                </div>
+              </div>
+
+              <div class="field">
+                <label for="percentageTaxPaid">Quarterly percentage tax already paid</label>
+                <input id="percentageTaxPaid" type="number" min="0" step="0.01" placeholder="0">
+                <small>Used only for a non-VAT taxpayer on graduated rates. The 8% option generally replaces percentage tax.</small>
+              </div>
+              <div id="vatWarning" class="notice warn hidden"><strong>VAT warning:</strong> this estimator will calculate income tax only. It will not estimate VAT because reliable VAT calculations require invoice-level output and input tax information.</div>
+            </div>
+
+            <button class="btn btn-primary" type="submit">Calculate estimate</button>
+          </form>
+
+          <aside class="result-panel" aria-label="Estimator result">
+            <div id="calculatorResult" class="result-empty">
+              <h3>Your result will appear here.</h3>
+              <p>You will see income tax before credits, credits entered, any estimated unpaid percentage tax, and the assumptions behind the estimate.</p>
+              <div class="notice"><strong>Important:</strong> BetterBuwis is not an official filing system and does not submit a return to the BIR.</div>
+            </div>
+          </aside>
+        </div>
       </div>
     </div>
-    <div class="type-card" onclick="selectType('mixed', this)">
-      <div class="tc-icon">🔄</div>
-      <div class="tc-body">
-        <h3>Mixed Income Earner</h3>
-        <p>Employed full-time AND earning side income from freelance, business, or rental.</p>
-        <div class="tc-forms">BIR Form 1701 · 1701Q</div>
+  </section>
+
+  <section class="section" id="filing-guide">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label">Filing and registration guide</div>
+        <h2 class="section-title">A TIN does not answer every filing question.</h2>
+        <p class="section-copy">Your filing duties depend on your taxpayer registration, income sources, tax types, and whether those registrations were formally updated or closed.</p>
+      </div>
+
+      <div class="pathway">
+        <nav class="path-nav card" aria-label="Guide sections">
+          <a href="#employee-guide">Employee</a>
+          <a href="#no-income-guide">No current income</a>
+          <a href="#freelancer-guide">Freelancer or side income</a>
+          <a href="#business-guide">Selling as a business</a>
+          <a href="#records-guide">What to check</a>
+        </nav>
+        <div class="path-content">
+          <article class="card" id="employee-guide">
+            <div class="card-kicker">Employee</div>
+            <h3>One employer and correct withholding</h3>
+            <p>You may qualify for substituted filing, meaning the employer-filed information can take the place of a separate annual return. Multiple employers, mixed income, or other disqualifying circumstances can change that answer.</p>
+          </article>
+          <article class="card" id="no-income-guide">
+            <div class="card-kicker">No current income</div>
+            <h3>Unemployed does not always mean “nothing to file.”</h3>
+            <p>If your BIR registration still lists business, professional, VAT, percentage-tax, or withholding tax types, periodic or zero returns may remain expected until the registration is formally updated. Having only an employee TIN is a different situation.</p>
+          </article>
+          <article class="card" id="freelancer-guide">
+            <div class="card-kicker">Freelancer or side income</div>
+            <h3>Small or irregular income can still create registration and filing duties.</h3>
+            <p>The key questions are whether you are carrying on a trade, business, or profession; how you are registered; and which tax option applies. Mixed-income rules differ from pure self-employment.</p>
+          </article>
+          <article class="card" id="business-guide">
+            <div class="card-kicker">Business activity</div>
+            <h3>Registration is tied to actual commencement—not a convenient future January.</h3>
+            <p>Do not rely on the calendar year alone. When a business is considered to have commenced, what must be registered, and what records or invoices are required should be checked against current BIR rules and your actual operations.</p>
+          </article>
+          <article class="card" id="records-guide">
+            <div class="card-kicker">Check before concluding</div>
+            <h3>Gather these records first</h3>
+            <ul>
+              <li>BIR Certificate of Registration, if any</li>
+              <li>Tax types listed in your registration</li>
+              <li>Form 2316 and withholding certificates</li>
+              <li>Previously filed returns and email confirmations</li>
+              <li>Official payment receipts or electronic payment references</li>
+              <li>Any BIR notice, open case, or registration update</li>
+            </ul>
+          </article>
+        </div>
+      </div>
+      <div class="notice warn" style="margin-top:1rem"><strong>Do not post sensitive records publicly.</strong> BetterBuwis will never ask you to paste your TIN, government ID, full return, or account credentials into this website.</div>
+    </div>
+  </section>
+
+  <section class="callout-band">
+    <div class="container">
+      <div class="section-head">
+        <div class="section-label" style="color:#8a6100">Fix the system</div>
+        <h2 class="section-title">Taxpayers should not be punished for a process designed around queues.</h2>
+        <p class="section-copy">The Ease of Paying Taxes Act directs the BIR to build integrated, automated, end-to-end services for registration, filing, attachments, payment, and penalties—and to minimize face-to-face transactions. BetterBuwis will document where the actual experience still falls short, using evidence and specific reform proposals.</p>
+      </div>
+      <a class="btn btn-primary" href="methodology.html#editorial">Read our editorial principles</a>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="grid-2">
+        <div class="card">
+          <div class="card-kicker">Need a correction?</div>
+          <h3>Help us keep the information accurate.</h3>
+          <p>Send the specific page, statement, and official source to <a href="mailto:hello@betterbuwis.com">hello@betterbuwis.com</a>. We will maintain a visible update history.</p>
+        </div>
+        <div class="card">
+          <div class="card-kicker">Need a professional?</div>
+          <h3>Complex cases deserve licensed review.</h3>
+          <p>Back taxes, BIR notices, VAT, estate tax, corporate filings, audits, and incomplete records should be reviewed by a Philippine CPA or tax lawyer. BetterBuwis does not prepare or submit returns.</p>
+        </div>
       </div>
     </div>
-    <div class="type-card" onclick="selectType('business', this)">
-      <div class="tc-icon">🏪</div>
-      <div class="tc-body">
-        <h3>Small Business / SME</h3>
-        <p>Online seller, motorcycle repairman, plumber, or carinderia owner. Monthly or quarterly filing depending on VAT status.</p>
-        <div class="tc-forms">BIR Form 1701 · 2551Q · 2550M/Q</div>
-      </div>
+  </section>
+</main>
+
+<footer class="site-footer">
+  <div class="footer-inner">
+    <div>
+      <strong style="color:white">BetterBuwis</strong><br>
+      Free Philippine tax education and estimation. Not affiliated with the Bureau of Internal Revenue.<br>
+      Last reviewed: 13 July 2026 · Contact: <a href="mailto:hello@betterbuwis.com">hello@betterbuwis.com</a>
+    </div>
+    <div class="footer-links">
+      <a href="penalties.html">Penalties FAQ</a>
+      <a href="methodology.html">Methodology & sources</a>
+      <a href="privacy.html">Privacy</a>
+      <a href="https://www.bir.gov.ph/" rel="noopener">Official BIR website</a>
     </div>
   </div>
-</section>
-
-<section class="upload-section" id="upload" style="display:none">
-  <div style="text-align:center;padding:40px 24px">
-    <div style="font-size:3rem;margin-bottom:16px">📝</div>
-    <h2 style="font-family:'Playfair Display',serif;font-size:1.5rem;font-weight:900;margin-bottom:12px">Ready when you are.</h2>
-    <p style="color:var(--muted);font-size:0.9rem;max-width:440px;margin:0 auto 28px;line-height:1.7">We will ask you a series of questions about your income, deductions, and donations. No documents needed — just answer as best you can and we will do the rest.</p>
-    <button class="btn-primary" style="font-size:1rem;padding:14px 40px" onclick="startWizard()">→ Answer Questions</button>
-  </div>
-</section>
-
-<!-- WIZARD -->
-<div id="wizard">
-  <div class="progress-wrap">
-    <div class="step-row" id="stepRow"></div>
-    <div class="progress-bar"><div class="progress-fill" id="progressFill"></div></div>
-  </div>
-  <div id="qContainer"></div>
-  <div class="q-nav">
-    <button class="btn-back" id="btnBack" onclick="prevStep()">← Back</button>
-    <span id="stepNum" style="font-size:0.78rem;color:var(--muted)"></span>
-    <button class="btn-next" id="btnNext" onclick="nextStep()">Continue →</button>
-  </div>
-</div>
-
-<!-- RESULT -->
-<div id="result">
-  <div class="result-header">
-    <h2 id="resultTitle">Your 2025 Tax Summary</h2>
-    <p>Estimated from your answers. Bring this to your accountant or use eBIRForms to file officially.</p>
-  </div>
-  <div class="result-cards" id="resultCards"></div>
-  <div class="breakdown" id="breakdown"></div>
-  <div id="deadlineBox"></div>
-  <div id="donationBox"></div>
-  <div class="disclaimer">
-    <strong>📋 Important reminder:</strong> BetterBuwis is a free tax simulator — not an official BIR filing tool. The numbers you see here are estimates based on your answers and the TRAIN Law (RA 10963) and NIRC. Think of it as a helpful preview, not a final return. To officially settle your taxes with the government, you still need to file through <strong>eBIRForms</strong> or <strong>EFPS</strong> at bir.gov.ph — or work with a registered CPA. That said, we hope this gives you enough clarity to walk into that conversation feeling a whole lot more confident. 💛
-  </div>
-  <div class="result-actions">
-    <button class="btn-dl" onclick="downloadPDF()">📥 Download Summary</button>
-    <button class="btn-restart" onclick="restart()">← Start Over</button>
-  </div>
-</div>
-
-<!-- CPA EMAIL CAPTURE (website-landlord) -->
-<section class="cpa-section" id="cpa">
-  <div class="cpa-card">
-    <div class="cpa-label">Need a CPA?</div>
-    <h2>Some things are better left to a licensed professional.</h2>
-    <p>BetterBuwis is a free educational tool — we are not a CPA and we do not file returns for you. But if your situation is complex (back taxes, a BIR letter, mixed income, or you just want a real person to check your figures), tell us a little about yourself and we'll help connect you with a licensed CPA. No charge to ask.</p>
-    <form onsubmit="return sendCpaEmail(event)">
-      <div class="cpa-form-row">
-        <div class="cpa-field">
-          <label for="cpa-name">Your name</label>
-          <input type="text" id="cpa-name" placeholder="Juan dela Cruz" required>
-        </div>
-        <div class="cpa-field">
-          <label for="cpa-email">Your email</label>
-          <input type="email" id="cpa-email" placeholder="you@email.com" required>
-        </div>
-      </div>
-      <div class="cpa-form-row">
-        <div class="cpa-field">
-          <label for="cpa-location">City / Province</label>
-          <input type="text" id="cpa-location" placeholder="e.g., Quezon City">
-        </div>
-        <div class="cpa-field">
-          <label for="cpa-type">What do you need help with?</label>
-          <select id="cpa-type">
-            <option value="General tax question">General tax question</option>
-            <option value="Annual income tax return (ITR)">Annual income tax return (ITR)</option>
-            <option value="Freelancer / professional taxes">Freelancer / professional taxes</option>
-            <option value="Small business / SME compliance">Small business / SME compliance</option>
-            <option value="Received a BIR notice / audit">Received a BIR notice / audit</option>
-          </select>
-        </div>
-      </div>
-      <div class="cpa-field full">
-        <label for="cpa-message">Anything else? (optional)</label>
-        <textarea id="cpa-message" placeholder="A sentence or two about your situation..."></textarea>
-      </div>
-      <input type="text" id="cpa-gotcha" name="_gotcha" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0">
-      <button type="submit" class="btn-cpa-send">✉️ Send my request</button>
-    </form>
-    <p class="cpa-status" id="cpaStatus" style="display:none"></p>
-    <p class="cpa-fineprint">
-      We use your details <strong>only to connect you with a licensed CPA</strong> — no spam, no sharing beyond that. BetterBuwis is an educational tool and does not provide tax advice or filing services.
-    </p>
-  </div>
-</section>
-
-<footer>
-  <strong>BetterBuwis</strong> · betterbuwis.com · Tax filing made simple. Free forever.<br>
-  Based on TRAIN Law (RA 10963), NIRC, and BIR Revenue Regulations · RR No. 7-2025 · RMC No. 81-2025<br>
-  Not affiliated with the Bureau of Internal Revenue. Official filing: <strong>eBIRForms</strong> / <strong>EFPS</strong> at bir.gov.ph<br>
-  Made in the 🇵🇭 for every Filipino — from the Makati boardroom to the palengke.<br><br>
-  <em>BetterBuwis is here to make tax filing less painful — but we are a helper, not a tax professional. Please double-check your figures before submitting to the BIR. We cannot be held responsible for filing errors or penalties. When in doubt, consult a CPA.</em>
 </footer>
-
-<style media="print">
-  body { background: white !important; color: black !important; }
-  nav, .hero, .trust-strip, .how, .type-select-section, .upload-section, #wizard, .result-actions, footer { display: none !important; }
-  #result { display: block !important; padding: 20px !important; }
-  .rc { border: 1px solid #ccc !important; background: white !important; }
-  .rc.gold { background: #fffbe6 !important; }
-  .rc.green { background: #f0fff4 !important; }
-  .rc.red { background: #fff5f5 !important; }
-  .rc-value { color: black !important; }
-  .rc.gold .rc-value { color: #b7791f !important; }
-  .rc.green .rc-value { color: #276749 !important; }
-  .rc.red .rc-value { color: #c53030 !important; }
-  .breakdown { border: 1px solid #ccc !important; }
-  .bi { border-bottom: 1px solid #eee !important; color: black !important; }
-  .bi-label { color: #555 !important; }
-  .bi-val { color: black !important; }
-  .bi-val.pos { color: #276749 !important; }
-  .bi-val.neg { color: #c53030 !important; }
-  .bi-val.gold { color: #b7791f !important; }
-  .bi-section { background: #fffbe6 !important; }
-  .bi-section span { color: #b7791f !important; }
-  .callout { border: 1px solid #ccc !important; background: #f9f9f9 !important; }
-  .disclaimer { border: 1px solid #ccc !important; background: #fff5f5 !important; color: #555 !important; }
-  .result-header h2, .result-header p { color: black !important; }
-</style>
-<script>
-// =====================
-// STATE
-// =====================
-let taxpayerType = null;
-let answers = {};
-let currentStep = 0;
-let activeQs = [];
-
-// =====================
-// QUESTIONS
-// =====================
-const ALL_QUESTIONS = [
-  // --- INCOME ---
-  { id:'gross_comp', section:'Income', title:'What was your total gross salary in 2025?', hint:'Before any deductions — check your payslips or BIR Form 2316. Include all employers.', type:'peso', placeholder:'e.g., 480000', show: t => ['employee','mixed'].includes(t) },
-  { id:'employer_count', section:'Income', title:'How many employers did you have in 2025?', hint:'One employer with correct withholding may qualify you for substituted filing — no need to file manually.', type:'option', show: t => ['employee','mixed'].includes(t),
-    options:[{icon:'1️⃣',text:'One employer only',sub:'May qualify for substituted filing',val:'1'},{icon:'2️⃣',text:'Two employers',sub:'Must file manually',val:'2'},{icon:'🔢',text:'Three or more',val:'3+'}] },
-  { id:'freelance_gross', section:'Income', title:'Total gross professional / business income in 2025?', hint:'Include all consulting fees, project fees, commissions, online sales, rental income — before any deductions.', type:'peso', placeholder:'e.g., 350000', show: t => ['freelance','mixed','business'].includes(t) },
-  { id:'vat_status', section:'Income', title:'Is your business VAT-registered?', hint:'VAT registration is mandatory once gross sales exceed ₱3,000,000 per year. Below that threshold, you\'re non-VAT and pay 3% percentage tax instead (unless you opted for the 8% flat rate).', type:'option', show: t => ['business','freelance'].includes(t),
-    options:[{icon:'✅',text:'Yes — VAT registered',sub:'12% VAT · File 2550M monthly + 2550Q quarterly',val:'vat'},{icon:'❌',text:'No — Non-VAT',sub:'Gross sales below ₱3M · File 2551Q quarterly',val:'nonvat'},{icon:'🆕',text:'Just starting out',sub:'Not yet registered',val:'new'}] },
-  { id:'filing_preference', section:'Income', title:'Which tax rate do you prefer for your business/freelance income?', hint:'8% flat tax is simplest — replaces both income tax and percentage tax. OSD is 40% off your gross. Itemized needs receipts but can save more if expenses are high.', type:'option', show: t => ['freelance','mixed','business'].includes(t),
-    options:[{icon:'⚡',text:'8% Flat Tax',sub:'Gross ≤ ₱3M · Replaces income tax AND percentage tax',val:'8pct'},{icon:'📊',text:'Optional Standard Deduction (OSD)',sub:'40% of gross — no receipts needed',val:'osd'},{icon:'🧾',text:'Itemized Deductions',sub:'Actual expenses · Requires official receipts',val:'itemized'}] },
-  { id:'itemized_exp', section:'Income', title:'Total documented business expenses in 2025?', hint:'Rent, utilities, supplies, internet, professional fees, salaries paid. Must have official receipts (ORs). Reasonable and necessary for the business only.', type:'peso', placeholder:'e.g., 120000', show: t => true, dependsOn:{id:'filing_preference',val:'itemized'} },
-  { id:'bonus', section:'Income', title:'Did you receive 13th month pay or performance bonuses?', hint:'The first ₱90,000 of 13th month pay and other benefits is tax-exempt under TRAIN Law. Excess is added to taxable income.', type:'option', show: t => ['employee','mixed'].includes(t),
-    options:[{icon:'🎁',text:'Yes',sub:'Enter total amount next',val:'yes'},{icon:'❌',text:'No',val:'no'}] },
-  { id:'bonus_amt', section:'Income', title:'Total 13th month pay + bonuses received in 2025?', hint:'Add all bonuses received. First ₱90,000 is exempt. Amount above ₱90,000 becomes taxable.', type:'peso', placeholder:'e.g., 75000', show: t => true, dependsOn:{id:'bonus',val:'yes'} },
-
-  // --- DEDUCTIONS ---
-  { id:'govt_contribs', section:'Deductions', title:'Were SSS, PhilHealth, and Pag-IBIG contributions deducted from your pay?', hint:'Mandatory government contributions are excluded from your taxable compensation income.', type:'option', show: t => true,
-    options:[{icon:'✅',text:'Yes — employer deducted them',sub:'Standard for regular employees',val:'auto'},{icon:'🏢',text:'I paid them myself',sub:'Self-employed / voluntary contributor',val:'self'},{icon:'❓',text:'Not sure',val:'unsure'}] },
-  { id:'sss_self', section:'Deductions', title:'Total SSS + PhilHealth + Pag-IBIG contributions you paid in 2025?', hint:'Check your SSS, PhilHealth, and HDMF online accounts for your total contributions for the year.', type:'peso', placeholder:'e.g., 28800', show: t => true, dependsOn:{id:'govt_contribs',val:'self'} },
-
-  // --- DONATIONS ---
-  { id:'donations', section:'Donations & Refunds', title:'Did you make any donations in 2025?', hint:'Donations to BIR-accredited NGOs or government priority programs can reduce your taxable income by up to 10% (individuals) under Sec. 34(H), NIRC. Many accountants miss this deduction entirely.', type:'option', show: t => true,
-    options:[{icon:'💚',text:'Yes — I donated to an organization',sub:'Church, NGO, school, government',val:'yes'},{icon:'❌',text:'No donations',val:'no'}] },
-  { id:'donee_type', section:'Donations & Refunds', title:'What kind of organization did you donate to?', hint:'Only BIR-accredited donees qualify for the income tax deduction. They should issue you a BIR Form 2322 (Certificate of Donation).', type:'option', show: t => true, dependsOn:{id:'donations',val:'yes'},
-    options:[{icon:'✅',text:'BIR-accredited NGO',sub:'They gave me a BIR Form 2322',val:'accredited'},{icon:'🏛️',text:'Government entity / NEDA priority project',sub:'Fully deductible',val:'govt'},{icon:'⛪',text:'Church / informal group',sub:'Generally not deductible',val:'church'},{icon:'❓',text:'I\'m not sure',val:'unsure'}] },
-  { id:'donation_amt', section:'Donations & Refunds', title:'How much did you donate in total in 2025?', hint:'Cap is 10% of your taxable income for individuals, 5% for corporations. Have BIR Form 2322 ready to attach to your ITR.', type:'peso', placeholder:'e.g., 50000', show: t => true, dependsOn:{id:'donations',val:'yes'} },
-
-  // --- TAXES ALREADY PAID ---
-  { id:'withheld', section:'Donations & Refunds', title:'Total income tax withheld from you in 2025?', hint:'Find this on your BIR Form 2316 (Box 26 — Total Taxes Withheld). Or add all withholding entries from your payslips.', type:'peso', placeholder:'e.g., 62500', show: t => true },
-  { id:'quarterly_paid', section:'Donations & Refunds', title:'Did you make quarterly income tax payments in 2025?', hint:'Self-employed and freelancers file quarterly (Form 1701Q) due May 15, Aug 15, Nov 15. These credit against your annual tax.', type:'option', show: t => ['freelance','mixed','business'].includes(t),
-    options:[{icon:'✅',text:'Yes — I paid quarterly taxes',sub:'Enter total next',val:'yes'},{icon:'❌',text:'No',val:'no'}] },
-  { id:'quarterly_amt', section:'Donations & Refunds', title:'Total quarterly income tax payments made in 2025?', hint:'Add your Q1 + Q2 + Q3 payments (Form 1701Q). Do not include Q4 — that\'s what we\'re computing now.', type:'peso', placeholder:'e.g., 28000', show: t => true, dependsOn:{id:'quarterly_paid',val:'yes'} },
-  { id:'pct_tax_paid', section:'Donations & Refunds', title:'Did you pay quarterly percentage tax (Form 2551Q) in 2025?', hint:'Non-VAT businesses and freelancers (not on 8% option) pay 3% of gross quarterly receipts via Form 2551Q — due 25 April, 25 July, 25 October, 25 January.', type:'option', show: t => ['freelance','business'].includes(t),
-    options:[{icon:'✅',text:'Yes — I filed 2551Q quarterly',val:'yes'},{icon:'❌',text:'No / I\'m on 8% flat rate',val:'no'}] },
-];
-
-// TRAIN LAW 2025 TAX TABLE
-const TAX_TABLE = [
-  {min:0,max:250000,base:0,rate:0},
-  {min:250000,max:400000,base:0,rate:0.15},
-  {min:400000,max:800000,base:22500,rate:0.20},
-  {min:800000,max:2000000,base:102500,rate:0.25},
-  {min:2000000,max:8000000,base:402500,rate:0.30},
-  {min:8000000,max:Infinity,base:2202500,rate:0.35},
-];
-function gradTax(n) {
-  if (n <= 0) return 0;
-  for (const b of TAX_TABLE) { if (n <= b.max) return b.base + (n - b.min) * b.rate; }
-  return 0;
-}
-function fmt(n) { return isNaN(n) ? '0' : Math.round(n).toLocaleString('en-PH'); }
-
-// =====================
-// FLOW
-// =====================
-function selectType(type, el) {
-  taxpayerType = type;
-  gtag('event', 'taxpayer_type_selected', {
-    'event_category': 'engagement',
-    'taxpayer_type': type
-  });
-  document.querySelectorAll('.type-card').forEach(c => c.classList.remove('selected'));
-  el.classList.add('selected');
-  setTimeout(() => {
-    document.getElementById('upload').style.display = 'block';
-    document.getElementById('upload').scrollIntoView({behavior:'smooth'});
-  }, 300);
-}
-
-function handleDrop(e) {
-  e.preventDefault();
-  document.getElementById('dropzone').classList.remove('dragover');
-  startWizard();
-}
-
-function getActiveQs() {
-  return ALL_QUESTIONS.filter(q => {
-    if (!q.show(taxpayerType)) return false;
-    if (q.dependsOn) return answers[q.dependsOn.id] === q.dependsOn.val;
-    return true;
-  });
-}
-
-function startWizard() {
-  if (!taxpayerType) { alert('Please select your taxpayer type first.'); return; }
-  answers = {}; currentStep = 0;
-  document.getElementById('upload').style.display = 'none';
-  document.querySelector('.type-select-section').style.opacity = '0.4';
-  document.querySelector('.type-select-section').style.pointerEvents = 'none';
-  const wiz = document.getElementById('wizard');
-  wiz.style.display = 'block';
-  wiz.classList.add('active');
-  activeQs = getActiveQs();
-  renderStep();
-  setTimeout(() => wiz.scrollIntoView({behavior:'smooth'}), 100);
-}
-
-function renderStep() {
-  activeQs = getActiveQs();
-  if (currentStep >= activeQs.length) { showResult(); return; }
-  const q = activeQs[currentStep];
-  const sections = [...new Set(activeQs.map(x=>x.section))];
-  const fill = ((currentStep+1)/activeQs.length)*100;
-  document.getElementById('progressFill').style.width = fill+'%';
-  document.getElementById('stepNum').textContent = `${currentStep+1} of ${activeQs.length}`;
-  document.getElementById('btnBack').style.opacity = currentStep===0?'0.35':'1';
-
-  // Step pills
-  document.getElementById('stepRow').innerHTML = sections.map(s=>{
-    const idx = activeQs.findIndex(x=>x.section===s);
-    const isDone = idx!==-1 && currentStep > activeQs.map(x=>x.section).lastIndexOf(s);
-    const isActive = q.section===s;
-    return `<div class="step-pill ${isDone?'done':''} ${isActive?'active':''}">${s}</div>`;
-  }).join('');
-
-  // Question
-  let html = `<div class="q-card">
-    <div class="q-section">${q.section}</div>
-    <div class="q-title">${q.title}</div>
-    <div class="q-hint">${q.hint}</div>`;
-  if (q.type==='option') {
-    html += `<div class="q-options">`;
-    q.options.forEach(o=>{
-      const sel = answers[q.id]===o.val?'selected':'';
-      html+=`<div class="q-option ${sel}" onclick="pick('${q.id}','${o.val}',this)">
-        <span class="opt-icon">${o.icon}</span>
-        <div><div class="opt-text">${o.text}</div>${o.sub?`<div class="opt-sub">${o.sub}</div>`:''}</div>
-      </div>`;
-    });
-    html += `</div>`;
-  } else if (q.type==='peso') {
-    const v = answers[q.id]||'';
-    html+=`<div class="q-input-wrap"><span class="q-prefix">₱</span>
-      <input class="q-input" type="number" min="0" placeholder="${q.placeholder}" value="${v}"
-        oninput="answers['${q.id}']=this.value" id="inp_${q.id}" style="max-width:320px">
-    </div>`;
-  }
-  html += `</div>`;
-  document.getElementById('qContainer').innerHTML = html;
-}
-
-function pick(qId, val, el) {
-  answers[qId] = val;
-  document.querySelectorAll('.q-option').forEach(o=>o.classList.remove('selected'));
-  el.classList.add('selected');
-}
-
-function nextStep() {
-  const q = activeQs[currentStep];
-  if (q.type==='peso') { const inp=document.getElementById(`inp_${q.id}`); if(inp) answers[q.id]=inp.value; }
-  if (!answers[q.id] && q.type==='option') { alert('Please select an option to continue.'); return; }
-  currentStep++;
-  activeQs = getActiveQs();
-  if (currentStep>=activeQs.length) showResult();
-  else { renderStep(); document.getElementById('wizard').scrollIntoView({behavior:'smooth'}); }
-}
-
-function prevStep() { if(currentStep>0){currentStep--;renderStep();} }
-
-// =====================
-// RESULT
-// =====================
-function showResult() {
-  document.getElementById('wizard').style.display='none';
-  document.getElementById('result').classList.add('active');
-  document.getElementById('result').style.display='block';
-  document.getElementById('result').scrollIntoView({behavior:'smooth'});
-
-  const a = answers;
-  const p = v => parseFloat(v)||0;
-
-  // Income
-  const grossComp = p(a.gross_comp);
-  const freelanceGross = p(a.freelance_gross);
-  const bonusTotal = p(a.bonus_amt);
-  const bonusExempt = Math.min(bonusTotal, 90000);
-  const bonusTaxable = Math.max(bonusTotal-90000, 0);
-
-  // Govt contributions
-  let govtContribs = 0;
-  if (a.govt_contribs==='auto') {
-    const sss = Math.min(grossComp*0.05,14400);
-    const ph = Math.min(grossComp*0.025,2500*12);
-    const pi = Math.min(grossComp*0.02,100*12);
-    govtContribs = sss+ph+pi;
-  } else if (a.govt_contribs==='self') {
-    govtContribs = p(a.sss_self);
-  }
-
-  // Taxable compensation
-  let taxableComp = Math.max(grossComp - govtContribs - bonusExempt + bonusTaxable, 0);
-
-  // Freelance/business income
-  let freelanceTaxable = 0, freelanceTax = 0, deductLabel='';
-  if (freelanceGross > 0) {
-    if (a.filing_preference==='8pct') {
-      freelanceTax = Math.max(freelanceGross-250000,0)*0.08;
-      freelanceTaxable = freelanceGross; deductLabel='8% flat tax';
-    } else if (a.filing_preference==='osd') {
-      freelanceTaxable = freelanceGross*0.60; deductLabel='OSD 40% applied';
-    } else {
-      freelanceTaxable = Math.max(freelanceGross-p(a.itemized_exp),0); deductLabel='Itemized deductions';
-    }
-  }
-
-  // Donation
-  let donationDeduct=0, donationEligible=false;
-  if (a.donations==='yes' && ['accredited','govt'].includes(a.donee_type) && p(a.donation_amt)>0) {
-    donationEligible=true;
-    const cap=(taxableComp+freelanceTaxable)*0.10;
-    donationDeduct=Math.min(p(a.donation_amt),cap);
-  }
-
-  // Total taxable
-  let totalTaxable = Math.max(taxableComp+freelanceTaxable-donationDeduct,0);
-
-  // Tax due
-  let taxDue = 0;
-  if (a.filing_preference==='8pct' && freelanceGross>0) {
-    taxDue = gradTax(taxableComp) + freelanceTax;
-  } else {
-    taxDue = gradTax(totalTaxable);
-  }
-
-  // Percentage tax (3% for non-VAT if not on 8%)
-  let pctTax = 0;
-  if (['freelance','business'].includes(taxpayerType) && a.vat_status==='nonvat' && a.filing_preference!=='8pct') {
-    pctTax = freelanceGross * 0.03;
-  }
-
-  const credits = p(a.withheld)+p(a.quarterly_amt);
-  const balance = taxDue+pctTax-credits;
-  const isRefund = balance<0;
-
-  // Filing period label
-  const typeLabels = {employee:'Employee (BIR 1700)',freelance:'Freelancer (BIR 1701A)',mixed:'Mixed Income (BIR 1701)',business:'Business Owner (BIR 1701)'};
-  document.getElementById('resultTitle').textContent = `${typeLabels[taxpayerType]||''} — 2025 Tax Summary`;
-
-  // Summary cards
-  document.getElementById('resultCards').innerHTML=`
-    <div class="rc"><div class="rc-label">Taxable Income</div><div class="rc-value">₱${fmt(totalTaxable)}</div><div class="rc-sub">After all deductions</div></div>
-    <div class="rc gold"><div class="rc-label">Income Tax Due</div><div class="rc-value">₱${fmt(taxDue)}</div><div class="rc-sub">TRAIN Law 2025 rates</div></div>
-    <div class="rc ${isRefund?'green':'red'}"><div class="rc-label">${isRefund?'🎉 Tax Refund':'Balance Due'}</div><div class="rc-value">${isRefund?'+':''}₱${fmt(Math.abs(balance))}</div><div class="rc-sub">${isRefund?'You overpaid — file for refund!':'Due by April 15 / May 15'}</div></div>
-  `;
-
-  // Breakdown
-  const rows=[
-    {sec:'Compensation Income'},
-    grossComp>0?{label:'Gross Salary',val:`₱${fmt(grossComp)}`}:null,
-    bonusExempt>0?{label:'13th Month Pay (exempt portion)',val:`−₱${fmt(bonusExempt)}`,cls:'pos'}:null,
-    govtContribs>0?{label:'SSS / PhilHealth / Pag-IBIG',val:`−₱${fmt(govtContribs)}`,cls:'pos'}:null,
-    freelanceGross>0?{sec:'Business / Freelance Income'}:null,
-    freelanceGross>0?{label:`Gross Self-Employment Income (${deductLabel})`,val:`₱${fmt(freelanceTaxable)}`}:null,
-    pctTax>0?{label:'3% Percentage Tax (BIR 2551Q · Non-VAT)',val:`₱${fmt(pctTax)}`,cls:'neg'}:null,
-    donationDeduct>0?{sec:'Deductions'}:null,
-    donationDeduct>0?{label:'Charitable Donation (Sec. 34H, NIRC)',val:`−₱${fmt(donationDeduct)}`,cls:'pos'}:null,
-    {sec:'Tax Computation'},
-    {label:'Total Taxable Income',val:`₱${fmt(totalTaxable)}`,cls:'gold'},
-    {label:'Income Tax Due',val:`₱${fmt(taxDue)}`},
-    credits>0?{label:'Less: Withholding + Quarterly Payments',val:`−₱${fmt(credits)}`,cls:'pos'}:null,
-    {label:isRefund?'TAX REFUND':'BALANCE DUE',val:`₱${fmt(Math.abs(balance))}`,cls:isRefund?'pos':'neg'},
-  ].filter(Boolean);
-
-  document.getElementById('breakdown').innerHTML=rows.map(r=>{
-    if(r.sec) return `<div class="bi-section"><span>${r.sec}</span></div>`;
-    return `<div class="bi"><span class="bi-label">${r.label}</span><span class="bi-val ${r.cls||''}">${r.val}</span></div>`;
-  }).join('');
-
-  // Deadline callout for SMBs
-  let deadlineHtml='';
-  if (['freelance','business'].includes(taxpayerType)) {
-    const isVat = a.vat_status==='vat';
-    const is8pct = a.filing_preference==='8pct';
-    deadlineHtml=`<div class="callout deadline">
-      <div class="callout-icon">📅</div>
-      <div>
-        <h4>Your Filing Deadlines</h4>
-        <p>
-          ${isVat ? '<strong>Monthly VAT (2550M):</strong> 20th day of each following month.<br><strong>Quarterly VAT (2550Q):</strong> 25th day after each quarter.' : ''}
-          ${!isVat && !is8pct ? '<strong>Quarterly Percentage Tax (2551Q):</strong> 25 April · 25 July · 25 October · 25 January.<br>' : ''}
-          ${is8pct ? '<strong>8% flat rate:</strong> No percentage tax filing needed — replaced by 8% on gross receipts.<br>' : ''}
-          <strong>Quarterly Income Tax (1701Q):</strong> 15 May · 15 August · 15 November.<br>
-          <strong>Annual ITR:</strong> On or before April 15 (May 15 under recent BIR circulars — verify annually).
-        </p>
-      </div>
-    </div>`;
-  }
-  document.getElementById('deadlineBox').innerHTML=deadlineHtml;
-
-  // Donation callout
-  let donHtml='';
-  if (a.donations==='yes' && donationDeduct>0) {
-    donHtml=`<div class="callout donation"><div class="callout-icon">💚</div><div>
-      <h4>You Claimed Your Donation Deduction!</h4>
-      <p>Your ₱${fmt(p(a.donation_amt))} donation saved you an estimated ₱${fmt(donationDeduct*0.20)}–₱${fmt(donationDeduct*0.35)} in taxes under Sec. 34(H), NIRC. Attach your BIR Form 2322 (Certificate of Donation) to your ITR. Most accountants skip this step — you did not.</p>
-    </div></div>`;
-  } else if (a.donations==='no') {
-    donHtml=`<div class="callout donation"><div class="callout-icon">💡</div><div>
-      <h4>Tip: Donations Can Reduce Your Tax</h4>
-      <p>Next year, donate to BIR-accredited NGOs or NEDA priority government programs. Under Sec. 34(H), NIRC, individuals can deduct up to 10% of taxable income. Ask for BIR Form 2322 from the recipient organization. Most accountants never bring this up.</p>
-    </div></div>`;
-  } else if (a.donations==='yes' && !donationEligible) {
-    donHtml=`<div class="callout donation"><div class="callout-icon">⚠️</div><div>
-      <h4>Your Donation May Not Be Deductible</h4>
-      <p>Only donations to BIR-accredited donee institutions qualify for income tax deduction. Ask the organization if they have a BIR Donee Institution Accreditation and can issue you a BIR Form 2322. Churches and informal groups generally do not qualify.</p>
-    </div></div>`;
-  }
-  document.getElementById('donationBox').innerHTML=donHtml;
-}
-
-function downloadPDF() {
-  window.print();
-}
-
-function restart() {
-  answers={}; currentStep=0; taxpayerType=null;
-  document.getElementById('result').classList.remove('active');
-  document.getElementById('result').style.display='none';
-  document.getElementById('wizard').style.display='none';
-  document.getElementById('upload').style.display='none';
-  document.querySelector('.type-select-section').style.opacity='1';
-  document.querySelectorAll('.type-card').forEach(c=>c.classList.remove('selected'));
-  window.scrollTo({top:0,behavior:'smooth'});
-}
-
-// =====================
-// CPA LEAD CAPTURE (website-landlord lead funnel)
-// 1. FORM_ENDPOINT: paste your Formspree endpoint (https://formspree.io/f/xxxxxxx).
-//    Leads then arrive automatically in your Formspree dashboard + inbox — no spreadsheet wrangling.
-// 2. CPA_INBOX: fallback address used only if the network request fails.
-// =====================
-const FORM_ENDPOINT = 'https://formspree.io/f/xeedwped';
-const CPA_INBOX = 'cpa@betterbuwis.com';
-
-function cpaFields() {
-  const v = id => (document.getElementById(id) ? document.getElementById(id).value.trim() : '');
-  return { name: v('cpa-name'), email: v('cpa-email'), location: v('cpa-location'), need: v('cpa-type'), message: v('cpa-message'), _gotcha: v('cpa-gotcha') };
-}
-
-function mailtoFallback(e) {
-  if (e) e.preventDefault();
-  const f = cpaFields();
-  const subject = `CPA request via BetterBuwis — ${f.need}`;
-  const body =
-    `Hi BetterBuwis,\n\nI'd like to be connected with a licensed CPA.\n\n` +
-    `Name: ${f.name}\nEmail: ${f.email}\nLocation: ${f.location || '(not provided)'}\n` +
-    `Need: ${f.need}\nDetails: ${f.message || '(none)'}\n\nThank you.`;
-  window.location.href = `mailto:${CPA_INBOX}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
-  return false;
-}
-
-async function sendCpaEmail(e) {
-  e.preventDefault();
-  const form = e.target;
-  const f = cpaFields();
-  const status = document.getElementById('cpaStatus');
-  const btn = form.querySelector('.btn-cpa-send');
-  const label = btn.textContent;
-
-  gtag('event','cpa_request_submitted',{'event_category':'lead','need':f.need});
-  btn.disabled = true; btn.textContent = 'Sending…';
-  status.style.display = 'none';
-
-  try {
-    const res = await fetch(FORM_ENDPOINT, {
-      method: 'POST',
-      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
-      body: JSON.stringify({ ...f, _subject: `CPA request via BetterBuwis — ${f.need}` })
-    });
-    if (!res.ok) throw new Error('Form endpoint returned ' + res.status);
-    form.reset();
-    status.className = 'cpa-status ok';
-    status.textContent = '✓ Salamat! Your request is in. We will email you to connect you with a licensed CPA shortly.';
-    status.style.display = 'block';
-  } catch (err) {
-    status.className = 'cpa-status err';
-    status.innerHTML = 'That did not go through. <a href="#" onclick="return mailtoFallback(event)">Tap here to send it by email instead →</a>';
-    status.style.display = 'block';
-  } finally {
-    btn.disabled = false; btn.textContent = label;
-  }
-  return false;
-}
-</script>
+<script src="app.js"></script>
 </body>
 </html>
